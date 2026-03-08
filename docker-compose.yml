@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   postgres:
@@ -14,12 +12,18 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build: ./server
     container_name: project_backend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       PORT: 5000
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/app_db
