@@ -30,6 +30,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'Personal Finance API is running 🚀' });
 });
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "personal-finance-api",
+    time: new Date()
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 const pool = require('./config/db');
@@ -66,5 +74,3 @@ app.use('/api/transactions', transactionRoutes);
 const errorMiddleware = require('./middleware/errorMiddleware');
 
 app.use(errorMiddleware);
-
-console.log("🔥 server reloaded");
