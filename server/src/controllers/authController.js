@@ -1,44 +1,70 @@
-const authService = require('../services/authService');
+const pool = require("../config/db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const register = async (req, res, next) => {
+const registerUser = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    const userExists = await pool.query(
+      "SELECT * FROM users WHERE email=$1",
+      [email]
+    );
+
+    if (userExists.rows.length > 0) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await authService.registerUser(email, password);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    res.status(201).json({
-      message: 'User registered successfully',
-      user,
-    });
+    const newUser = await pool.query(
+      "INSERT INTO users (email, password) VALUES ($1,$2) RETURNING id,email",
+      [email, hashedPassword]
+    );
+
+    res.status(201).json(newUser.rows[0]);
+
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+  try {
+
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email=$1",
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const data = await authService.loginUser(email, password);
+    const user = result.rows[0];
 
-    res.json({
-      message: 'Login successful',
-      ...data,
-    });
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({ token });
+
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = {
-  register,
-  login,
-};
+module.exports = { registerUser, loginUser };

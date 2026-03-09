@@ -40,15 +40,11 @@ app.get("/api/health", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-const pool = require('./config/db');
+const pool = require("./config/db");
 
-pool.connect()
-  .then(() => {
-    console.log('Connected to PostgreSQL ✅');
-  })
-  .catch((err) => {
-    console.error('PostgreSQL connection error ❌', err);
-  });
+pool.query("SELECT 1")
+  .then(() => console.log("Database connection OK"))
+  .catch(err => console.error("Database connection failed", err));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -74,5 +70,3 @@ app.use('/api/transactions', transactionRoutes);
 const errorMiddleware = require('./middleware/errorMiddleware');
 
 app.use(errorMiddleware);
-
-//test 
