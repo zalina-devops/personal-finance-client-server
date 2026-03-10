@@ -15,4 +15,6 @@ router.get("/", authMiddleware, getTransactions);
 
 router.delete("/:id", authMiddleware, deleteTransaction);
 
+router.put("/:id", authMiddleware, updateTransaction);
+
 module.exports = router;

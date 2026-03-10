@@ -53,3 +53,23 @@ exports.deleteTransaction = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.updateTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type, amount, category } = req.body;
+
+    const result = await pool.query(
+      `UPDATE transactions
+       SET type=$1, amount=$2, category=$3
+       WHERE id=$4 AND user_id=$5
+       RETURNING *`,
+      [type, amount, category, id, req.user.userId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

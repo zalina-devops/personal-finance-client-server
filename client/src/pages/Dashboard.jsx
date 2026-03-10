@@ -97,6 +97,26 @@ export default function Dashboard() {
     }
   };
 
+  const expenseTransactions = transactions.filter(
+	(t) => t.type === "expense"
+  );
+
+  const categoryTotals = {};
+
+  expenseTransactions.forEach((t) => {
+	if (!categoryTotals[t.category]) {
+	  categoryTotals[t.category] = 0;
+	}
+
+	categoryTotals[t.category] += Number(t.amount);
+  });
+
+  const chartData = Object.keys(categoryTotals).map((category) => ({
+	name: category,
+	value: categoryTotals[category],
+  }));
+  
+  const COLORS = ["#ff6b6b", "#4ecdc4", "#ffe66d", "#1a535c"];
 
   return (
     <div>
@@ -129,7 +149,6 @@ export default function Dashboard() {
             textAlign: "center",
           }}
         >
-		
 		
           <h3>Balance</h3>
           <p>${balance}</p>
@@ -164,6 +183,26 @@ export default function Dashboard() {
         </div>
       </div>
 	  
+		<h2>Expenses by Category</h2>
+
+		<PieChart width={400} height={300}>
+		  <Pie
+			data={chartData}
+			dataKey="value"
+			nameKey="name"
+			cx="50%"
+			cy="50%"
+			outerRadius={100}
+			label
+		  >
+			{chartData.map((entry, index) => (
+			  <Cell fill={COLORS[index % COLORS.length]} />
+			))}
+		  </Pie>
+
+		  <Tooltip />
+		  <Legend />
+		</PieChart>
 
       <h2>Add Transaction</h2>
 
