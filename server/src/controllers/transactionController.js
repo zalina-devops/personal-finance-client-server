@@ -1,66 +1,55 @@
-const transactionService = require('../services/transactionService');
+const pool = require("../config/db");
 
-const createTransaction = async (req, res) => {
+exports.addTransaction = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const { type, amount, category } = req.body;
+    const userId = req.user.userId;
 
-    const transaction = await transactionService.create(userId, req.body);
+    const result = await pool.query(
+      `INSERT INTO transactions (user_id, type, amount, category)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [userId, type, amount, category]
+    );
 
-    res.status(201).json(transaction);
-  } catch (error) {
-    next(error);
+    res.json(result.rows[0]);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const getTransactions = async (req, res, next) => {
+exports.getTransactions = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
 
-    const result = await transactionService.getAll(userId, req.query);
+    const result = await pool.query(
+      "SELECT * FROM transactions WHERE user_id=$1 ORDER BY created_at DESC",
+      [userId]
+    );
 
-    res.json({
-      success: true,
-      ...result,
-    });
-  } catch (error) {
-    next(error);
+    res.json(result.rows);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-const deleteTransaction = async (req, res) => {
+exports.deleteTransaction = async (req, res) => {
   try {
-    const userId = req.user.id;
     const { id } = req.params;
 
-    const deleted = await transactionService.remove(userId, id);
+    await pool.query(
+      "DELETE FROM transactions WHERE id=$1",
+      [id]
+    );
 
-    res.json({ message: 'Transaction deleted', deleted });
-  } catch (error) {
-    next(error);
+    res.json({ message: "Transaction deleted" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
-};
-
-module.exports = {
-  createTransaction,
-  getTransactions,
-  deleteTransaction,
-};
-
-const getBalance = async (req, res, next) => {
-  try {
-    const userId = req.user.id;
-
-    const balance = await transactionService.getBalance(userId);
-
-    res.json(balance);
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports = {
-  createTransaction,
-  getTransactions,
-  deleteTransaction,
-  getBalance,
 };
