@@ -67,7 +67,14 @@ exports.updateTransaction = async (req, res) => {
       [type, amount, category, id, req.user.userId]
     );
 
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Transaction not found"
+      });
+    }
+
     res.json(result.rows[0]);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
