@@ -9,12 +9,17 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
 
+  // состояния для формы
+  const [type, setType] = useState("expense");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  // Загрузка профиля
+  // загрузка профиля
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -28,7 +33,7 @@ export default function Dashboard() {
     loadUser();
   }, []);
 
-  // Загрузка транзакций
+  // загрузка транзакций
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -42,6 +47,29 @@ export default function Dashboard() {
     fetchTransactions();
   }, []);
 
+  // добавление транзакции
+  const addTransaction = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await API.post("/transactions", {
+        type,
+        amount,
+        category,
+      });
+
+      // добавляем новую транзакцию в начало списка
+      setTransactions([res.data, ...transactions]);
+
+      // очищаем форму
+      setAmount("");
+      setCategory("");
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -53,6 +81,31 @@ export default function Dashboard() {
       )}
 
       <button onClick={logout}>Logout</button>
+
+      <h2>Add Transaction</h2>
+
+      <form onSubmit={addTransaction}> style={{ marginBottom: "20px" }}>
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+
+        <input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+
+        <button type="submit">Add</button>
+      </form>
 
       <h2>Transactions</h2>
 
