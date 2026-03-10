@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { getProfile } from "../api/user";
 import { useNavigate } from "react-router-dom";
 import API from "../api/api";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend
+} from "recharts";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -70,6 +77,27 @@ export default function Dashboard() {
     }
   };
 
+  const income = transactions
+	.filter((t) => t.type === "income")
+	.reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const expense = transactions
+	.filter((t) => t.type === "expense")
+	.reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const balance = income - expense;
+
+  const deleteTransaction = async (id) => {
+    try {
+      await API.delete(`/transactions/${id}`);
+
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -81,10 +109,65 @@ export default function Dashboard() {
       )}
 
       <button onClick={logout}>Logout</button>
+	  
+	  <h2>Summary</h2>
+	  
+	  <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          marginTop: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "15px",
+            borderRadius: "8px",
+            width: "120px",
+            textAlign: "center",
+          }}
+        >
+		
+		
+          <h3>Balance</h3>
+          <p>${balance}</p>
+        </div>
+
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "15px",
+            borderRadius: "8px",
+            width: "120px",
+            textAlign: "center",
+            color: "green",
+          }}
+        >
+          <h3>Income</h3>
+          <p>${income}</p>
+        </div>
+
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "15px",
+            borderRadius: "8px",
+            width: "120px",
+            textAlign: "center",
+            color: "red",
+          }}
+        >
+          <h3>Expense</h3>
+          <p>${expense}</p>
+        </div>
+      </div>
+	  
 
       <h2>Add Transaction</h2>
 
-      <form onSubmit={addTransaction}> style={{ marginBottom: "20px" }}>
+      <form onSubmit={addTransaction} style={{ marginBottom: "20px" }}>
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -109,13 +192,40 @@ export default function Dashboard() {
 
       <h2>Transactions</h2>
 
-      <ul>
-        {transactions.map((t) => (
-          <li key={t.id}>
-            {t.type} | ${t.amount} | {t.category}
-          </li>
-        ))}
-      </ul>
+	  <table style={{ borderCollapse: "collapse", width: "400px" }}>
+        <thead>
+          <tr>
+            <th style={{ padding: "8px" }}>Type</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {transactions.map((t) => (
+            <tr key={t.id}>
+              <td style={{ padding: "8px" }}>{t.type}</td>
+              <td>${t.amount}</td>
+              <td>{t.category}</td>
+
+              <td>
+                <button
+                  onClick={() => deleteTransaction(t.id)}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                  }}
+                >
+                  ❌
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
