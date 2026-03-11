@@ -24,10 +24,35 @@ exports.getTransactions = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const result = await pool.query(
-      "SELECT * FROM transactions WHERE user_id=$1 ORDER BY created_at DESC",
-      [userId]
-    );
+    const { type, category, search, from, to } = req.query;
+
+    let query = `SELECT * FROM transactions WHERE user_id = $1`;
+    const params = [userId];
+
+    if (type) {
+      params.push(type);
+      query += ` AND type = $${params.length}`;
+    }
+
+    if (category) {
+      params.push(category);
+      query += ` AND category = $${params.length}`;
+    }
+
+    if (search) {
+      params.push(`%${search}%`);
+      query += ` AND category ILIKE $${params.length}`;
+    }
+
+    if (from && to) {
+      params.push(from);
+      params.push(to);
+      query += ` AND created_at BETWEEN $${params.length - 1} AND $${params.length}`;
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
+    const result = await pool.query(query, params);
 
     res.json(result.rows);
 
