@@ -7,7 +7,12 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend
+  Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid
 } from "recharts";
 
 export default function Dashboard() {
@@ -15,6 +20,10 @@ export default function Dashboard() {
 
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
+
 
   // состояния формы
   const [type, setType] = useState("expense");
@@ -42,18 +51,26 @@ export default function Dashboard() {
   }, []);
 
   // загрузка транзакций
-  const fetchTransactions = async () => {
-    try {
-      const res = await API.get("/transactions");
-      setTransactions(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+	const fetchTransactions = async () => {
+	  try {
+		const res = await API.get("/transactions", {
+		  params: {
+			search,
+			type: filterType,
+			category: filterCategory
+		  }
+		});
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+		setTransactions(res.data);
+
+	  } catch (err) {
+		console.error(err);
+	  }
+	};	
+
+	useEffect(() => {
+	  fetchTransactions();
+	}, [search, filterType, filterCategory]);
 
   // добавление или редактирование транзакции
   const handleSubmit = async (e) => {
@@ -131,10 +148,37 @@ export default function Dashboard() {
     value: categoryTotals[category],
   }));
 
+	const monthlyTotals = {};
+
+	transactions.forEach((t) => {
+	  if (t.type !== "expense") return;
+
+	  const date = new Date(t.created_at);
+	  const month = date.toLocaleString("default", { month: "short" });
+
+	  if (!monthlyTotals[month]) {
+		monthlyTotals[month] = 0;
+	  }
+
+	  monthlyTotals[month] += Number(t.amount);
+	});
+
+	const monthlyData = Object.keys(monthlyTotals).map((month) => ({
+	  month,
+	  amount: monthlyTotals[month],
+	}));
+
   const COLORS = ["#ff6b6b", "#4ecdc4", "#ffe66d", "#1a535c"];
 
-  return (
-    <div>
+	return (
+	  <div
+		style={{
+		  maxWidth: "1000px",
+		  margin: "0 auto",
+		  padding: "20px",
+		  fontFamily: "Arial"
+		}}
+	  >
       <h1>Dashboard</h1>
 
       {user && (
@@ -155,68 +199,141 @@ export default function Dashboard() {
           marginBottom: "20px",
         }}
       >
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            borderRadius: "8px",
-            width: "120px",
-            textAlign: "center",
-          }}
-        >
+		<div
+		  style={{
+			background: "#f4f6f8",
+			padding: "20px",
+			borderRadius: "10px",
+			width: "150px",
+			textAlign: "center",
+			boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+		  }}
+		>
           <h3>Balance</h3>
-          <p>${balance}</p>
+          <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+			${balance}
+		  </p>
         </div>
 
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            borderRadius: "8px",
-            width: "120px",
-            textAlign: "center",
-            color: "green",
-          }}
-        >
-          <h3>Income</h3>
-          <p>${income}</p>
-        </div>
+		<div
+		  style={{
+			background: "#e8f8f1",
+			padding: "20px",
+			borderRadius: "10px",
+			width: "150px",
+			textAlign: "center",
+			color: "green",
+			boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+		  }}
+		>
+			<h3>Income</h3>
+			  <p style={{ fontSize: "20px", fontWeight: "bold", color: "green" }}>
+				${income}
+			  </p>
+			</div>
 
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "15px",
-            borderRadius: "8px",
-            width: "120px",
-            textAlign: "center",
-            color: "red",
-          }}
-        >
+		<div
+		  style={{
+			background: "#fdecea",
+			padding: "20px",
+			borderRadius: "10px",
+			width: "150px",
+			textAlign: "center",
+			color: "red",
+			boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+		  }}
+		>
           <h3>Expense</h3>
-          <p>${expense}</p>
+          <p style={{ fontSize: "20px", fontWeight: "bold", color: "red" }}>${expense}</p>
         </div>
       </div>
 
       <h2>Expenses by Category</h2>
 
-      <PieChart width={400} height={300}>
-        <Pie
-          data={chartData}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          label
-        >
-          {chartData.map((entry, index) => (
-            <Cell key={index} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
+	  <div style={{ display: "flex", justifyContent: "center" }}>	
+		  <PieChart width={400} height={300}>
+			<Pie
+			  data={chartData}
+			  dataKey="value"
+			  nameKey="name"
+			  cx="50%"
+			  cy="50%"
+			  outerRadius={100}
+			  label
+			>
+			  {chartData.map((entry, index) => (
+				<Cell key={index} fill={COLORS[index % COLORS.length]} />
+			  ))}
+			</Pie>
 
-        <Tooltip />
-        <Legend />
-      </PieChart>
+			<Tooltip />
+			<Legend />
+		  </PieChart>
+      </div>
+	  
+		<h2>Monthly Expenses</h2>
+
+		<div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
+		  <LineChart
+			width={500}
+			height={300}
+			data={monthlyData}
+		  >
+			<CartesianGrid strokeDasharray="3 3" />
+
+			<XAxis dataKey="month" />
+
+			<YAxis />
+
+			<Tooltip />
+
+			<Line
+			  type="monotone"
+			  dataKey="amount"
+			  stroke="#ff6b6b"
+			  strokeWidth={3}
+			/>
+		  </LineChart>
+		</div>
+	  
+	<h2>Filters</h2>
+
+	<div style={{ justifyContent: "center", marginBottom: "30px", display: "flex", gap: "10px" }}>
+
+	  <input
+		type="text"
+		placeholder="Search category..."
+		value={search}
+		onChange={(e) => setSearch(e.target.value)}
+	  />
+
+	  <select
+		value={filterType}
+		onChange={(e) => setFilterType(e.target.value)}
+	  >
+		<option value="">All Types</option>
+		<option value="income">Income</option>
+		<option value="expense">Expense</option>
+	  </select>
+
+	  <input
+		type="text"
+		placeholder="Filter category"
+		value={filterCategory}
+		onChange={(e) => setFilterCategory(e.target.value)}
+	  />
+
+	</div>
+
+		<button
+		  onClick={() => {
+			setSearch("");
+			setFilterType("");
+			setFilterCategory("");
+		  }}
+		>
+		  Reset
+		</button>
 
       <h2>Add Transaction</h2>
 
@@ -247,8 +364,18 @@ export default function Dashboard() {
 
       <h2>Transactions</h2>
 
-      <table style={{ borderCollapse: "collapse", width: "400px" }}>
-        <thead>
+	<table
+	  style={{
+		borderCollapse: "collapse",
+		width: "100%",
+		marginTop: "20px"
+	  }}
+	>
+		<thead
+		  style={{
+			background: "#f4f6f8"
+		  }}
+		>
           <tr>
             <th style={{ padding: "8px" }}>Type</th>
             <th>Amount</th>
@@ -259,7 +386,12 @@ export default function Dashboard() {
 
         <tbody>
           {transactions.map((t) => (
-            <tr key={t.id}>
+			<tr
+			  key={t.id}
+			  style={{
+				borderBottom: "1px solid #eee"
+			  }}
+			>
               <td style={{ padding: "8px" }}>{t.type}</td>
               <td>${t.amount}</td>
               <td>{t.category}</td>
