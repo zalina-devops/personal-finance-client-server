@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 const TransactionTable = ({
   transactions,
@@ -15,7 +15,6 @@ const TransactionTable = ({
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
 
-  // Отфильтрованные транзакции
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
       const matchesSearch = t.category.toLowerCase().includes(search.toLowerCase());
@@ -31,22 +30,23 @@ const TransactionTable = ({
     currentPage * limit
   );
 
-  // Сбрасываем страницу, если фильтр изменился и текущая страница стала недоступна
-  React.useEffect(() => {
+  useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1);
-  }, [totalPages]);
+  }, [totalPages, currentPage]);
 
   return (
-    <div>
+    <div className="transactions-container">
       {/* Фильтры */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <div className="filters-bar" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <input
           type="text"
           placeholder="Search category..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className="form-input"
+          style={{ flex: 1, minWidth: '200px' }}
         />
-        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+        <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className="form-select">
           <option value="">All Types</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
@@ -56,61 +56,59 @@ const TransactionTable = ({
           placeholder="Filter category"
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
+          className="form-input"
         />
-        <button onClick={onResetFilters}>Reset</button>
+        <button onClick={onResetFilters} className="btn btn-outline">Reset</button>
       </div>
 
-      {/* Таблица */}
-      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead style={{ background: "#f4f6f8" }}>
-          <tr>
-            <th style={{ padding: "8px" }}>Type</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pageTransactions.map((t) => (
-            <tr key={t.id} style={{ borderBottom: "1px solid #eee" }}>
-              <td style={{ padding: "8px" }}>{t.type}</td>
-              <td>${t.amount}</td>
-              <td>{t.category}</td>
-              <td>
-                <button onClick={() => onEdit(t)}>✏️</button>
-                <button
-                  onClick={() => onDelete(t.id)}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    marginLeft: "10px"
-                  }}
-                >
-                  ❌
-                </button>
-              </td>
+      <div className="transactions-table-wrapper" style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 0.5rem' }}>
+          <thead>
+            <tr style={{ background: 'transparent' }}>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Type</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Amount</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Category</th>
+              <th style={{ padding: '0.75rem 1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 500 }}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {pageTransactions.map((t) => (
+              <tr key={t.id} style={{ background: 'white', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
+                <td style={{ padding: '0.75rem 1rem' }}>
+                  <span className={`badge ${t.type}`}>{t.type}</span>
+                </td>
+                <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: t.type === 'income' ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+                  ${t.amount}
+                </td>
+                <td style={{ padding: '0.75rem 1rem' }}>{t.category}</td>
+                <td style={{ padding: '0.75rem 1rem' }}>
+                  <button onClick={() => onEdit(t)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '0.5rem' }}>
+                    ✏️
+                  </button>
+                  <button onClick={() => onDelete(t.id)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Пагинация */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", gap: "5px" }}>
-        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>Prev</button>
+      <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '0.25rem', marginTop: '2rem' }}>
+        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="btn btn-outline" disabled={currentPage === 1}>Prev</button>
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}
             onClick={() => setCurrentPage(i + 1)}
-            style={{
-              fontWeight: currentPage === i + 1 ? "bold" : "normal"
-            }}
+            className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+            style={{ minWidth: '2.5rem' }}
           >
             {i + 1}
           </button>
         ))}
-        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>Next</button>
+        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="btn btn-outline" disabled={currentPage === totalPages}>Next</button>
       </div>
     </div>
   );

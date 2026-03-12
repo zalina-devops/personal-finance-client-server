@@ -1,35 +1,24 @@
-// src/pages/Dashboard/SummaryCards.jsx
-import React from "react";
+import React from 'react';
+import { FaWallet, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 const SummaryCards = ({ balance, income, expense }) => (
-  <div style={{ display: "flex", gap: "20px", marginTop: "20px", marginBottom: "20px" }}>
-    <div style={cardStyle}>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+    <div className="summary-card" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+      <FaWallet size={24} />
       <h3>Balance</h3>
-      <p style={numberStyle}>${balance}</p>
+      <p className="amount">${balance}</p>
     </div>
-    <div style={{ ...cardStyle, background: "#e8f8f1", color: "green" }}>
+    <div className="summary-card" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white' }}>
+      <FaArrowUp size={24} />
       <h3>Income</h3>
-      <p style={{ ...numberStyle, color: "green" }}>${income}</p>
+      <p className="amount">${income}</p>
     </div>
-    <div style={{ ...cardStyle, background: "#fdecea", color: "red" }}>
+    <div className="summary-card" style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: 'white' }}>
+      <FaArrowDown size={24} />
       <h3>Expense</h3>
-      <p style={{ ...numberStyle, color: "red" }}>${expense}</p>
+      <p className="amount">${expense}</p>
     </div>
   </div>
 );
-
-const cardStyle = {
-  background: "#f4f6f8",
-  padding: "20px",
-  borderRadius: "10px",
-  width: "150px",
-  textAlign: "center",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-};
-
-const numberStyle = {
-  fontSize: "20px",
-  fontWeight: "bold"
-};
 
 export default SummaryCards;
