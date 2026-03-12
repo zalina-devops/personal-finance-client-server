@@ -88,7 +88,7 @@ export default function Dashboard() {
 	<div className="dashboard">
 		<header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 		  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-			<img src={import.meta.env.BASE_URL + 'logo.png'} alt="MyFinance" height="36" />
+			<img src="/logo.png" alt="MyFinance" height="36" />
 			<h1 style={{ margin: 0, fontSize: '1.8rem' }}>MyFinance</h1>
 		  </div>
 		  {user && (
