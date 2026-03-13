@@ -148,6 +148,32 @@ button, input, select {
   z-index: 1;
 }
 
+/* Для Chrome, Edge, Safari */
+.transactions-table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.transactions-table-wrapper::-webkit-scrollbar-track {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+.transactions-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+  border-radius: 4px;
+}
+
+.transactions-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blue);
+}
+
+/* Для Firefox */
+.transactions-table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary) var(--border-light);
+}
+
 /* Тёмная тема */
 .dark-theme {
   --bg-color: #1a1f2e;
