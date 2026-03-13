@@ -72,44 +72,55 @@ const TransactionTable = ({
             </tr>
           </thead>
           <tbody>
-            {pageTransactions.map((t) => (
-              <tr key={t.id} style={{ background: 'white', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
-                <td style={{ padding: '0.75rem 1rem' }}>
-                  <span className={`badge ${t.type}`}>{t.type}</span>
-                </td>
-                <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: t.type === 'income' ? 'var(--accent-green)' : 'var(--accent-red)' }}>
-                  ${t.amount}
-                </td>
-                <td style={{ padding: '0.75rem 1rem' }}>{t.category}</td>
-                <td style={{ padding: '0.75rem 1rem' }}>
-                  <button onClick={() => onEdit(t)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '0.5rem' }}>
-                    ✏️
-                  </button>
-                  <button onClick={() => onDelete(t.id)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                    🗑️
-                  </button>
+            {filteredTransactions.length === 0 ? (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
+                  <span style={{ fontSize: '2rem', display: 'block' }}>📭</span>
+                  {transactions.length === 0 ? 'Нет транзакций. Добавьте первую!' : 'Ничего не найдено по фильтру'}
                 </td>
               </tr>
-            ))}
+            ) : (
+              pageTransactions.map((t) => (
+                <tr key={t.id} style={{ background: 'white', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
+                  <td style={{ padding: '0.75rem 1rem' }}>
+                    <span className={`badge ${t.type}`}>{t.type}</span>
+                  </td>
+                  <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: t.type === 'income' ? 'var(--accent-green)' : 'var(--accent-red)' }}>
+                    ${t.amount}
+                  </td>
+                  <td style={{ padding: '0.75rem 1rem' }}>{t.category}</td>
+                  <td style={{ padding: '0.75rem 1rem' }}>
+                    <button onClick={() => onEdit(t)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '0.5rem' }}>
+                      ✏️
+                    </button>
+                    <button onClick={() => onDelete(t.id)} className="icon-btn" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
 
       {/* Пагинация */}
-      <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '0.25rem', marginTop: '2rem' }}>
-        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="btn btn-outline" disabled={currentPage === 1}>Prev</button>
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
-            style={{ minWidth: '2.5rem' }}
-          >
-            {i + 1}
-          </button>
-        ))}
-        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="btn btn-outline" disabled={currentPage === totalPages}>Next</button>
-      </div>
+      {filteredTransactions.length > 0 && (
+        <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '0.25rem', marginTop: '2rem' }}>
+          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="btn btn-outline" disabled={currentPage === 1}>Prev</button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`btn ${currentPage === i + 1 ? 'btn-primary' : 'btn-outline'}`}
+              style={{ minWidth: '2.5rem' }}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="btn btn-outline" disabled={currentPage === totalPages}>Next</button>
+        </div>
+      )}
     </div>
   );
 };
