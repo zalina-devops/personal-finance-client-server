@@ -8,6 +8,8 @@ import ExpensePieChart from "./Dashboard/ExpensePieChart";
 import MonthlyChart from "./Dashboard/MonthlyChart";
 import TransactionTable from "./Dashboard/TransactionTable";
 import logo from '/logo.png';
+import { useTheme } from '../context/ThemeContext';
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -137,22 +139,27 @@ export default function Dashboard() {
     }, {})
   ).map(([month, amount]) => ({ month, amount }));
 
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <div className="dashboard">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <img src={logo} alt="MyFinance" height="36" />
           <h1 style={{ margin: 0, fontSize: '1.8rem' }}>MyFinance</h1>
         </div>
         {user && (
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+		    <button onClick={toggleTheme} className="btn btn-outline" style={{ minWidth: '40px' }}>
+              {isDark ? '☀️' : '🌙'}
+            </button>
             <span style={{ color: 'var(--text-secondary)' }}>User ID: {user.userId}</span>
             <button onClick={logout} className="btn btn-outline">Logout</button>
           </div>
         )}
       </header>
 
-      <section className="summary-cards">
+      <section className="summary-cards" style={{ marginBottom: '1.5rem' }}>
         <SummaryCards balance={balance} income={income} expense={expense} />
       </section>
 

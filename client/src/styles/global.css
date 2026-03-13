@@ -147,3 +147,96 @@ button, input, select {
   background: white;
   z-index: 1;
 }
+
+/* Тёмная тема */
+.dark-theme {
+  --bg-color: #1a1f2e;
+  --card-bg: #2d3440;
+  --text-primary: #f0f4fa;
+  --text-secondary: #a0aec0;
+  --accent-green: #2ecc71;
+  --accent-red: #e74c3c;
+  --accent-blue: #5a9cff;
+  --border-light: #4a5568;
+  --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+}
+
+body.dark-theme {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2d3440 100%);
+}
+
+.dark-theme .summary-card {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .btn-outline {
+  border-color: var(--border-light);
+  color: var(--text-secondary);
+}
+
+.dark-theme .btn-outline:hover {
+  background: #3a4355;
+}
+
+.dark-theme .form-input,
+.dark-theme .form-select {
+  background: #2d3440;
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.dark-theme .badge.income {
+  background: #0b3b2a;
+  color: #a7f3d0;
+}
+
+.dark-theme .badge.expense {
+  background: #4a1e1e;
+  color: #fecaca;
+}
+
+.dark-theme .transactions-table-wrapper table tr {
+  background: var(--card-bg) !important;
+}
+
+.dark-theme .add-transaction-card {
+  background: var(--card-bg) !important;
+}
+
+.dark-theme .chart-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+}
+
+.dark-theme .transactions-table-wrapper {
+  background: var(--card-bg);
+}
+
+.dark-theme .transactions-table-wrapper thead {
+  background: var(--card-bg);
+}
+
+.dark-theme .transactions-table-wrapper table tr {
+  background: var(--card-bg) !important;  /* перебивает инлайн-стиль */
+}
+
+.dark-theme .summary-card.balance {
+  background: linear-gradient(135deg, #4f5b9e 0%, #6d4c9e 100%);
+}
+.dark-theme .summary-card.income {
+  background: linear-gradient(135deg, #1f8b6e 0%, #0f6b4f 100%);
+}
+.dark-theme .summary-card.expense {
+  background: linear-gradient(135deg, #b33f3f 0%, #8e2c2c 100%);
+}
+
+.dashboard-header {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1rem;
+  background: rgba(var(--card-bg-rgb), 0.8); /* но --card-bg у нас цвет, не RGB */
+  backdrop-filter: blur(8px); /* эффект стекла */
+}
+

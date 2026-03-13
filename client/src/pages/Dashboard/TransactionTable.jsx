@@ -81,7 +81,7 @@ const TransactionTable = ({
               </tr>
             ) : (
               pageTransactions.map((t) => (
-                <tr key={t.id} style={{ background: 'white', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
+                <tr key={t.id} style={{ background: 'var(--card-bg)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }}>
                   <td style={{ padding: '0.75rem 1rem' }}>
                     <span className={`badge ${t.type}`}>{t.type}</span>
                   </td>
