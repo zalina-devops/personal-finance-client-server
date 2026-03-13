@@ -23,8 +23,8 @@
 }
 
 body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9eef5 100%);
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-color);
   color: var(--text-primary);
   line-height: 1.5;
 }

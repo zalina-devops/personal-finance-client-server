@@ -61,27 +61,34 @@ export default function Dashboard() {
   };
 
   // Обработчики для демо-режима (ничего не делают или показывают сообщение)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (useMock) {
-      alert("Добавление транзакций отключено в демо-режиме");
-      return;
-    }
-    try {
-      if (editingId) {
-        await API.put(`/transactions/${editingId}`, { type, amount, category });
-      } else {
-        await API.post("/transactions", { type, amount, category });
-      }
-      await fetchTransactions();
-      setAmount("");
-      setCategory("");
-      setType("expense");
-      setEditingId(null);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+	const handleSubmit = async (e) => {
+	  e.preventDefault();
+
+	  // Валидация
+	  if (!amount || Number(amount) <= 0) {
+		alert('Сумма должна быть положительным числом');
+		return;
+	  }
+	  if (!category.trim()) {
+		alert('Категория не может быть пустой');
+		return;
+	  }
+
+	  try {
+		if (editingId) {
+		  await API.put(`/transactions/${editingId}`, { type, amount, category });
+		} else {
+		  await API.post("/transactions", { type, amount, category });
+		}
+		await fetchTransactions();
+		setAmount("");
+		setCategory("");
+		setType("expense");
+		setEditingId(null);
+	  } catch (err) {
+		console.error(err);
+	  }
+	};
 
   const editTransaction = (t) => {
     if (useMock) {
