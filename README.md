@@ -103,7 +103,7 @@ PORT=5000
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
-DATABASE_PASSWORD="pineApple07#"
+DATABASE_PASSWORD=your_password
 DATABASE_NAME=personal_finance_db
 
 JWT_SECRET=supersecretkey
