@@ -6,131 +6,134 @@
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
-> **MyFinance** — это полноценное клиент-серверное приложение для учёта личных финансов. Оно позволяет добавлять доходы и расходы, просматривать статистику в виде графиков, фильтровать транзакции и переключать тёмную тему. Проект разработан в учебных целях и демонстрирует навыки работы с современным стеком технологий.
+![Backend Tests](https://img.shields.io/badge/backend%20tests-29%20passed-brightgreen?style=flat-square&logo=jest)
+![Frontend Tests](https://img.shields.io/badge/frontend%20tests-17%20passed-brightgreen?style=flat-square&logo=testing-library)
 
-🔗 **[Демо-версия на GitHub Pages](https://zalina-devops.github.io/personal-finance-client-server)**  
-*В демо-режиме используются моковые данные, изменения не сохраняются.*
+> **MyFinance** — полноценное клиент-серверное приложение для учёта личных финансов. Позволяет добавлять доходы и расходы, просматривать статистику в виде графиков, фильтровать транзакции и переключать тёмную тему. Проект демонстрирует навыки работы с современным fullstack-стеком.
+
+🔗 **[Демо на GitHub Pages](https://zalina-devops.github.io/personal-finance-client-server)**
+> В демо-режиме используются моковые данные — изменения не сохраняются.
 
 ---
 
 ## 📸 Скриншоты
 
 | Светлая тема | Тёмная тема |
-|--------------|-------------|
+|---|---|
 | ![Светлая тема](screenshots/dashboard-light.png) | ![Тёмная тема](screenshots/dashboard-dark.png) |
 
-| Добавление транзакции | Пустое состояние |
-|-----------------------|------------------|
-| ![Add transaction](screenshots/add-transaction.png) | ![Empty state](screenshots/empty-state.png) |
-
-| Таблица с фильтрами | Пустая таблица |
-|---------------------|----------------|
-| ![Transaction table](screenshots/transaction-table.png) | ![Empty table state](screenshots/empty-transaction-table-state.png) |
+| Добавление транзакции | Таблица с фильтрами |
+|---|---|
+| ![Add transaction](screenshots/add-transaction.png) | ![Transaction table](screenshots/transaction-table.png) |
 
 ---
 
-## 🚀 Функциональность
+## ✨ Функциональность
 
-### Клиентская часть (Frontend)
+### 🖥 Клиентская часть (Frontend)
 - ✅ Регистрация и авторизация пользователей (JWT)
 - ✅ Добавление, редактирование и удаление транзакций (доходы/расходы)
-- ✅ Фильтрация по типу (все / доходы / расходы) и по категории
-- ✅ Визуализация расходов по категориям (круговая диаграмма)
-- ✅ График расходов по месяцам
-- ✅ Валидация форм (сумма > 0, категория не пустая)
-- ✅ Пустые состояния — дружелюбные заглушки, когда нет данных
-- ✅ Тёмная тема с переключением (используется Context API + CSS-переменные)
+- ✅ Фильтрация по типу и категории
+- ✅ Визуализация расходов — круговая диаграмма и график по месяцам
+- ✅ Валидация форм
+- ✅ Тёмная тема (Context API + CSS-переменные)
 - ✅ Адаптивный дизайн для мобильных устройств
 - ✅ Пагинация в таблице транзакций
-- ✅ Демо-режим с моковыми данными (для GitHub Pages)
+- ✅ Демо-режим с моковыми данными (GitHub Pages)
 
-### Серверная часть (Backend)
+### ⚙️ Серверная часть (Backend)
 - ✅ REST API на Express.js
-- ✅ Аутентификация с JWT (bcrypt для хеширования паролей)
-- ✅ PostgreSQL база данных (таблицы `users`, `transactions`)
-- ✅ Docker-контейнеризация (бэкенд + БД)
-- ✅ Rate limiting для защиты от брутфорса
-- ✅ CORS, Helmet для безопасности
+- ✅ Аутентификация через JWT (bcrypt для хеширования паролей)
+- ✅ PostgreSQL — таблицы `users`, `transactions`
 - ✅ Подготовленные SQL-запросы (без ORM)
+- ✅ Rate limiting, CORS, Helmet для безопасности
+- ✅ Docker-контейнеризация (бэкенд + БД)
+
+### 🧪 Тестирование
+- ✅ **29 тестов бэкенда** — Jest + Supertest
+  - `auth.test.js` (11 тестов) — регистрация, вход, JWT, защищённые роуты
+  - `transactions.test.js` (18 тестов) — полный CRUD, валидация, фильтрация
+- ✅ **17 тестов фронтенда** — Jest + React Testing Library
+  - `Login.test.jsx` (6 тестов) — форма входа, валидация, мок API
+  - `SummaryCards.test.jsx` (6 тестов) — подсчёт доходов и расходов
+  - `ThemeContext.test.jsx` (5 тестов) — переключение темы, провайдер
 
 ---
 
 ## 🛠 Технологии
 
 ### Frontend
-- **React** + **Vite** — быстрая разработка и сборка
-- **React Router** — навигация
-- **Recharts** — графики (круговая диаграмма, линейный график)
-- **Axios** — HTTP-запросы
-- **CSS-переменные** + **Flexbox/Grid** — стилизация
-- **React Context** — глобальное состояние темы
-- **React Icons** — иконки
+| Технология | Назначение |
+|---|---|
+| React + Vite | UI и сборка |
+| React Router | Навигация |
+| Recharts | Графики и диаграммы |
+| Axios | HTTP-запросы |
+| React Context | Глобальное состояние темы |
+| CSS Variables + Flexbox/Grid | Стилизация |
 
 ### Backend
-- **Node.js** + **Express** — сервер
-- **PostgreSQL** — база данных
-- **jsonwebtoken** — JWT
-- **bcrypt** — хеширование паролей
-- **pg** — драйвер для PostgreSQL
-- **express-rate-limit** — ограничение запросов
-- **helmet** + **cors** — безопасность
-- **dotenv** — переменные окружения
+| Технология | Назначение |
+|---|---|
+| Node.js + Express | Сервер и REST API |
+| PostgreSQL | База данных |
+| jsonwebtoken | JWT-аутентификация |
+| bcrypt | Хеширование паролей |
+| pg | Драйвер PostgreSQL |
+| express-rate-limit | Защита от брутфорса |
+| helmet + cors | Безопасность |
 
-### Инфраструктура
-- **Docker** + **Docker Compose** — контейнеризация бэкенда и БД
-- **GitHub Pages** — хостинг демо-версии фронтенда
-- **Git** — контроль версий
+### Инфраструктура и тестирование
+| Технология | Назначение |
+|---|---|
+| Docker + Docker Compose | Контейнеризация |
+| Jest + Supertest | Тестирование бэкенда (29 тестов) |
+| Jest + React Testing Library | Тестирование фронтенда (17 тестов) |
+| GitHub Pages | Хостинг демо-версии |
+| Git | Контроль версий |
 
 ---
 
-## 📦 Установка и локальный запуск
+## 🚀 Запуск проекта
 
 ### Предварительные требования
-- [Docker](https://www.docker.com/) и Docker Compose (для бэкенда)
-- [Node.js](https://nodejs.org/) (v16+)
+- [Node.js](https://nodejs.org/) v16+
+- [Docker](https://www.docker.com/) и Docker Compose (для запуска через Docker)
 
-### 1. Клонирование репозитория
+---
+
+### Вариант 1 — Локальный запуск (без Docker)
+
+Этот способ подходит если Docker не установлен. Потребуется локальная PostgreSQL.
+
+**1. Клонируй репозиторий**
 ```bash
 git clone https://github.com/zalina-devops/personal-finance-client-server.git
 cd personal-finance-client-server
 ```
-### 2. Настройка переменных окружения (бэкенд)
-Создайте файл .env в папке server (рядом с index.js):
-```bash
-PORT=5000
 
+**2. Настрой переменные окружения бэкенда**
+
+Создай файл `.env` в папке `server/`:
+```env
+PORT=5000
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
 DATABASE_USER=postgres
 DATABASE_PASSWORD=your_password
 DATABASE_NAME=personal_finance_db
-
 JWT_SECRET=supersecretkey
 ```
-### 3. Запуск бэкенда и базы данных через Docker
-```bash
-docker-compose up --build
-```
-- PostgreSQL станет доступен на порту 5432
-- Бэкенд API — на http://localhost:5000
 
-### 4. Запуск фронтенда
-В новом терминале выполните:
-```
-cd client
-npm install
-npm run dev
-```
-Фронтенд откроется на http://localhost:5173
+**3. Создай базу данных и таблицы**
 
-### 5. Создание таблиц в базе (если не создались автоматически)
-После первого запуска может потребоваться создать таблицы вручную. Подключитесь к контейнеру PostgreSQL:
-```
-docker exec -it finance_postgres psql -U postgres -d personal_finance_db
-```
-Выполните SQL:
-```
+Подключись к PostgreSQL и выполни:
+```sql
+CREATE DATABASE personal_finance_db;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -147,140 +150,145 @@ CREATE TABLE IF NOT EXISTS transactions (
     created_at TIMESTAMP DEFAULT NOW()
 );
 ```
-## 🔌 API Endpoints (бэкенд)
 
-| Метод | URL | Описание | Тело запроса (JSON) |
-|-------|-----|------------|-------------------|
-| POST | /api/auth/register | Регистрация | { "email", "password" } |
-| POST | /api/auth/login | Вход | { "email", "password" } |
-| GET  | /api/protected | Проверка токена (защищённый маршрут) | — |
-| GET  | /api/transactions | Получить все транзакции пользователя (с опциональными query-параметрами search, type, category) | — |
-| POST | /api/transactions | Добавить транзакцию | { "type", "amount", "category" } |
-| PUT  | /api/transactions/:id | Обновить транзакцию | { "type", "amount", "category" } |
-| DELETE  | /api/transactions/:id  | Удалить транзакцию  | — |
+**4. Запусти бэкенд**
 
-## 🌐 Демо-версия (GitHub Pages)
+Открой первый терминал в папке `server/`:
+```bash
+cd server
+npm install
+node src/index.js
+```
+Бэкенд будет доступен на `http://localhost:5000`
 
-**Фронтенд доступен по адресу:**
+**5. Запусти фронтенд**
 
-👉 [zalina-devops.github.io/personal-finance-client-server](https://zalina-devops.github.io/personal-finance-client-server)
+Открой второй терминал в папке `client/`:
+```bash
+cd client
+npm install
+npm run dev
+```
+Фронтенд откроется на `http://localhost:5173`
 
-В демо-версии используется режим моковых данных (заглушка API). Это позволяет просматривать интерфейс без запуска бэкенда. Все операции (добавление, редактирование, удаление) заблокированы и показывают уведомление.
+---
 
-## 🧪 Тестирование (опционально)
+### Вариант 2 — Запуск через Docker (рекомендуется)
 
-Проект пока не покрыт тестами, но планируется добавить:
+Одна команда поднимает бэкенд и базу данных в контейнерах.
 
-- **Unit-тесты для компонентов** (Jest + React Testing Library)
-- **Интеграционные тесты для API** (Supertest)
+**1. Клонируй репозиторий**
+```bash
+git clone https://github.com/zalina-devops/personal-finance-client-server.git
+cd personal-finance-client-server
+```
+
+**2. Создай `.env` файл в папке `server/`** (см. шаг 2 выше)
+
+**3. Запусти Docker**
+```bash
+docker-compose up --build
+```
+
+- PostgreSQL будет доступен на порту `5432`
+- Бэкенд API — на `http://localhost:5000`
+
+**4. Запусти фронтенд** (в отдельном терминале)
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Фронтенд откроется на `http://localhost:5173`
+
+---
+
+## 🧪 Запуск тестов
+
+### Бэкенд (29 тестов)
+```bash
+cd server
+npm test
+```
+
+### Фронтенд (17 тестов)
+```bash
+cd client
+npm test
+```
+
+---
+
+## 🔌 API Endpoints
+
+| Метод | URL | Описание | Авторизация |
+|---|---|---|---|
+| POST | `/api/auth/register` | Регистрация | — |
+| POST | `/api/auth/login` | Вход | — |
+| GET | `/api/protected` | Проверка токена | ✅ Bearer |
+| GET | `/api/transactions` | Получить транзакции | ✅ Bearer |
+| POST | `/api/transactions` | Создать транзакцию | ✅ Bearer |
+| PUT | `/api/transactions/:id` | Обновить транзакцию | ✅ Bearer |
+| DELETE | `/api/transactions/:id` | Удалить транзакцию | ✅ Bearer |
+
+**Query-параметры для GET /api/transactions:**
+- `type` — фильтр по типу (`income` / `expense`)
+- `category` — фильтр по категории
+- `search` — поиск по категории
+
+---
 
 ## 📁 Структура проекта
+
 ```
 personal-finance-client-server/
-├── .gitignore
 ├── docker-compose.yml
-├── LICENSE
 ├── README.md
-├── client/
-│   ├── .env.production
-│   ├── index.html
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── dist/
-│   │   ├── favicon.ico
-│   │   ├── index.html
-│   │   ├── logo.png
-│   │   ├── vite.svg
-│   │   └── assets/
-│   │       ├── index-DdFUkfzd.css
-│   │       └── index-DOL9jUxt.js
-│   ├── public/
-│   │   ├── favicon.ico
-│   │   ├── logo.png
-│   │   └── vite.svg
-│   └── src/
-│       ├── App.jsx
-│       ├── main.jsx
-│       ├── api/
-│       │   ├── api.js
-│       │   ├── apiReal.js
-│       │   ├── auth.js
-│       │   ├── mockData.js
-│       │   └── user.js
-│       ├── components/
-│       │   └── ProtectedRoute.jsx
-│       ├── context/
-│       │   └── ThemeContext.jsx
-│       ├── hooks/
-│       ├── pages/
-│       │   ├── Dashboard.jsx
-│       │   ├── Login.jsx
-│       │   └── Dashboard/
-│       │       ├── ExpensePieChart.jsx
-│       │       ├── MonthlyChart.jsx
-│       │       ├── SummaryCards.jsx
-│       │       └── TransactionTable.jsx
-│       ├── styles/
-│       │   └── global.css
-│       └── utils/
-├── screenshots/
-└── server/
-    ├── .env
-    ├── Dockerfile
-    ├── package-lock.json
-    ├── package.json
-    └── src/
-        ├── index.js
-        ├── config/
-        │   └── db.js
-        ├── controllers/
-        │   ├── authController.js
-        │   └── transactionController.js
-        ├── middleware/
-        │   ├── authMiddleware.js
-        │   └── errorMiddleware.js
-        ├── models/
-        │   ├── transactionModel.js
-        │   └── userModel.js
-        ├── routes/
-        │   ├── authRoutes.js
-        │   └── transactionRoutes.js
-        ├── services/
-        │   ├── authService.js
-        │   └── transactionService.js
-        └── utils/
-            └── ApiError.js
+├── client/                          # Frontend (React + Vite)
+│   ├── src/
+│   │   ├── api/                     # HTTP-запросы и мок-данные
+│   │   ├── context/ThemeContext.jsx  # Глобальное состояние темы
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   └── Dashboard/           # SummaryCards, Charts, Table
+│   │   └── components/ProtectedRoute.jsx
+│   ├── src/__tests__/               # Тесты фронтенда (17 тестов)
+│   │   ├── Login.test.jsx
+│   │   ├── SummaryCards.test.jsx
+│   │   └── ThemeContext.test.jsx
+│   └── package.json
+└── server/                          # Backend (Node.js + Express)
+    ├── src/
+    │   ├── config/db.js             # Подключение к PostgreSQL
+    │   ├── controllers/             # authController, transactionController
+    │   ├── middleware/              # authMiddleware, errorMiddleware
+    │   ├── models/                  # Модели данных
+    │   ├── routes/                  # authRoutes, transactionRoutes
+    │   └── index.js                 # Точка входа
+    ├── tests/                       # Тесты бэкенда (29 тестов)
+    │   ├── auth.test.js             # 11 тестов аутентификации
+    │   └── transactions.test.js     # 18 тестов CRUD транзакций
+    └── package.json
 ```
+
+---
 
 ## 📌 Планы по развитию
 
-- Добавить экспорт транзакций в CSV/PDF
-- Создать возможность редактирования категорий
-- Улучшить адаптивность для планшетов
-- Написать тесты (фронтенд и бэкенд)
-- Развернуть бэкенд на бесплатном хостинге (Render/Railway) для полноценной демо-версии
-- Добавить страницу статистики с расширенными отчётами
+- [ ] Экспорт транзакций в CSV/Excel
+- [ ] Страница расширенной статистики
+- [ ] Редактирование категорий
+- [ ] Деплой бэкенда на Render/Railway для полноценной демо-версии
 
-## 🤝 Как внести вклад
-
-Если у вас есть идеи по улучшению проекта, вы можете:
-
-- Сделать форк репозитория
-- Создать ветку для своей функции (`git checkout -b feature/amazing`)
-- Закоммитить изменения (`git commit -m 'Add some amazing feature'`)
-- Запушить ветку (`git push origin feature/amazing`)
-- Открыть Pull Request
-
-## 📄 Лицензия
-Этот проект распространяется под лицензией MIT. Подробнее см. файл LICENSE.
+---
 
 ## 👩‍💻 Автор
-Залина — студентка 3-го курса по специальности 09.02.07.
 
-**GitHub:** [@zalina-devops](https://github.com/zalina-devops)
+**Залина Алискерова** — студентка 3 курса, специальность 09.02.07 «Информационные системы и программирование»
 
-Проект создан в учебных целях и будет использоваться в портфолио.
+[![GitHub](https://img.shields.io/badge/GitHub-zalina--devops-181717?style=flat&logo=github)](https://github.com/zalina-devops)
 
-----
-**Если вам понравился проект, не забудьте поставить ⭐ на GitHub!**
+---
+
+⭐ Если проект понравился — поставь звёздочку на GitHub!
