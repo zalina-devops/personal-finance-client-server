@@ -1,29 +1,21 @@
-/**
- * client/src/__tests__/Login.test.jsx
- * Тесты страницы входа
- *
- * Запуск: npm test (из папки client/)
- */
-
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Login from '../pages/Login';
 
-// Мокируем navigate чтобы не падать без роутера
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
 
-// Мокируем API чтобы не делать реальных запросов
 jest.mock('../api/auth', () => ({
   login: jest.fn(),
-  register: jest.fn(),
 }));
 
-import { login, register } from '../api/auth';
+import { login } from '../api/auth';
+
+global.alert = jest.fn(); // на всякий случай
 
 const renderLogin = () =>
   render(
@@ -33,7 +25,6 @@ const renderLogin = () =>
   );
 
 describe('Login — страница входа', () => {
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -44,62 +35,68 @@ describe('Login — страница входа', () => {
 
   it('отображает поля email и пароля', () => {
     renderLogin();
-    expect(screen.getByLabelText(/email/i) || screen.getByPlaceholderText(/email/i)).toBeTruthy();
-    expect(screen.getByLabelText(/пароль/i) || screen.getByPlaceholderText(/пароль/i) || screen.getByLabelText(/password/i)).toBeTruthy();
+    expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
   });
 
-  it('отображает кнопку входа', () => {
+  it('отображает кнопку Login', () => {
     renderLogin();
-    expect(
-      screen.getByRole('button', { name: /войти/i }) ||
-      screen.getByRole('button', { name: /вход/i }) ||
-      screen.getByRole('button', { name: /login/i })
-    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
   });
 
   it('показывает ошибку при пустой отправке формы', async () => {
     renderLogin();
-
-    const submitBtn = screen.getByRole('button', { name: /войти|вход|login/i });
+    const submitBtn = screen.getByRole('button', { name: /login/i });
+    
     fireEvent.click(submitBtn);
 
-    // Проверяем что API не вызвалось
+    await waitFor(() => {
+      expect(screen.getByText(/email and password are required/i)).toBeInTheDocument();
+    });
+
     expect(login).not.toHaveBeenCalled();
   });
 
   it('вызывает login с введёнными данными', async () => {
     login.mockResolvedValue({ token: 'fake-jwt-token' });
+
     renderLogin();
 
-    const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/пароль|password/i);
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { value: 'password123' },
+    });
 
-    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-
-    const submitBtn = screen.getByRole('button', { name: /войти|вход|login/i });
-    fireEvent.click(submitBtn);
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     await waitFor(() => {
       expect(login).toHaveBeenCalledWith('test@example.com', 'password123');
     });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
   });
 
   it('показывает сообщение об ошибке при неверных данных', async () => {
-    login.mockRejectedValue({ response: { data: { message: 'Неверный email или пароль' } } });
+    const errorMsg = 'Неверный email или пароль';
+    login.mockRejectedValue({
+      response: { data: { message: errorMsg } },
+    });
+
     renderLogin();
 
-    const emailInput = screen.getByPlaceholderText(/email/i);
-    const passwordInput = screen.getByPlaceholderText(/пароль|password/i);
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
+      target: { value: 'wrong@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { value: 'wrongpassword' },
+    });
 
-    fireEvent.change(emailInput, { target: { value: 'wrong@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
-
-    const submitBtn = screen.getByRole('button', { name: /войти|вход|login/i });
-    fireEvent.click(submitBtn);
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/неверный|ошибка|error/i)).toBeTruthy();
+      expect(screen.getByText(errorMsg)).toBeInTheDocument();
     });
   });
 });

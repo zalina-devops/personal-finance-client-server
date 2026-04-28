@@ -7,7 +7,7 @@ services:
 
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "pineApple07#"
+      POSTGRES_PASSWORD: pass_123
       POSTGRES_DB: personal_finance_db
 
     ports:
@@ -35,7 +35,7 @@ services:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       DATABASE_USER: postgres
-      DATABASE_PASSWORD: "pineApple07#"
+      DATABASE_PASSWORD: pass_123
       DATABASE_NAME: personal_finance_db
       JWT_SECRET: supersecretkey
 

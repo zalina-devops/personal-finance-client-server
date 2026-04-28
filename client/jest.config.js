@@ -1,11 +1,12 @@
 export default {
   testEnvironment: 'jsdom',
-  setupFilesAfterFramework: ['@testing-library/jest-dom'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],   // ← исправлено название
   moduleNameMapper: {
-    '\\.(css|scss)$': 'identity-obj-proxy',
-    '\\.(png|jpg|svg)$': '<rootDir>/src/__mocks__/fileMock.js',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/__tests__/__mocks__/fileMock.js', // если нужно
   },
   transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest',
   },
+  testMatch: ['**/__tests__/**/*.test.(js|jsx)'],
 };

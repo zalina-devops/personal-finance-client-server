@@ -17,7 +17,7 @@ if (isProduction) {
   };
 } else {
   // Реальный API для разработки
-  API = axios.create({ baseURL: 'http://192.168.0.55:5000/api' });
+  API = axios.create({ baseURL: 'http://localhost:5000/api' } );
 
   // Добавляем перехватчик для токена
   API.interceptors.request.use(
